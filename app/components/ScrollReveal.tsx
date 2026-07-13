@@ -10,8 +10,10 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
  * Global, declarative scroll animator.
  *
  * Any element tagged `data-reveal` fades and rises into view when scrolled to.
- * Elements that enter together are staggered (via ScrollTrigger.batch), which
- * gives grids and lists a natural cascade without per-component wiring.
+ * Each element gets its own trigger so it eases in smoothly and consistently
+ * the moment it enters — rather than a shared batch that can clump on fast
+ * scroll. Elements that share a parent (grids, lists) get a small, bounded
+ * cascade for polish.
  *
  * Motion is fully disabled under `prefers-reduced-motion` (Material 3 / WCAG),
  * where content is shown immediately with no transform.
@@ -26,21 +28,37 @@ export default function ScrollReveal() {
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const items = gsap.utils.toArray<HTMLElement>("[data-reveal]")
-      gsap.set(items, { y: 32, opacity: 0 })
 
-      ScrollTrigger.batch("[data-reveal]", {
-        start: "top 88%",
-        onEnter: (batch) =>
-          gsap.to(batch, {
-            y: 0,
-            opacity: 1,
-            duration: 0.7,
-            ease: "power3.out",
-            stagger: 0.1,
-            overwrite: true,
-          }),
+      // Position of each element among its reveal-siblings, so grids/lists
+      // cascade gently while standalone elements animate with no delay.
+      const groupIndex = new Map<Element, number>()
+
+      items.forEach((el) => {
+        const parent = el.parentElement
+        const i = parent ? groupIndex.get(parent) ?? 0 : 0
+        if (parent) groupIndex.set(parent, i + 1)
+
+        // Cap the cascade so a large grid never leaves the last card waiting.
+        const delay = Math.min(i, 3) * 0.09
+
+        gsap.set(el, { y: 24, opacity: 0, willChange: "transform, opacity" })
+
+        gsap.to(el, {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          ease: "power2.out",
+          delay,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            once: true,
+          },
+          onComplete: () => gsap.set(el, { clearProps: "willChange" }),
+        })
       })
 
+      // Ensure triggers measure correct positions after fonts/images settle.
       ScrollTrigger.refresh()
     })
 
