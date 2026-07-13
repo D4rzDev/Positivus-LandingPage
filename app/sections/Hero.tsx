@@ -1,17 +1,51 @@
-import React from 'react'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
+import React from "react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import Container from "../components/Container"
 
 export default function Hero() {
   return (
-    <div className=' flex items-center justify-center'>
-        <div className=' flex flex-col justify-center gap-6 lg:w-[500px]'>
-            <h1 className=' text-5xl font-semibold md:text-4xl'>Navigating the digital landscape for success</h1>
-            <Image src='/hero.svg' width={500} height={500} alt='img' className=' md:hidden '/>
-            <p className=' text-sm '>Our digital marketing agency helps businesses grow and succeed online through a range of services including SEO, PPC, social media marketing, and content creation.</p>
-            <Button size='lg' className=' md:w-48'>Book a Consultation</Button>
+    <section className="pt-8 md:pt-12">
+      <Container className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
+        <div className="flex flex-col items-start gap-8">
+          <h1 data-reveal className="text-display-lg text-brand-ink">
+            Navigating the digital landscape for success
+          </h1>
+
+          {/* Illustration on compact screens sits between headline and copy */}
+          <div data-reveal className="w-full lg:hidden">
+            <Image
+              src="/hero.svg"
+              width={600}
+              height={515}
+              alt="Illustration of a marketing team collaborating"
+              className="mx-auto h-auto w-full max-w-md"
+              priority
+            />
+          </div>
+
+          <p data-reveal className="max-w-lg text-body-lg text-brand-ink/80">
+            Our digital marketing agency helps businesses grow and succeed online
+            through a range of services including SEO, PPC, social media marketing,
+            and content creation.
+          </p>
+
+          <div data-reveal>
+            <Button size="lg">Book a Consultation</Button>
+          </div>
         </div>
-          <Image src='/hero.svg' width={350} height={350} alt='img' className=' hidden md:flex lg:w-[600px]'/>
-    </div>
+
+        <div data-reveal className="hidden lg:block">
+          <Image
+            src="/hero.svg"
+            width={600}
+            height={515}
+            alt="Illustration of a marketing team collaborating"
+            className="h-auto w-full"
+            priority
+          />
+        </div>
+      </Container>
+    </section>
   )
 }

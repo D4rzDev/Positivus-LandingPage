@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Hero from "./sections/Hero";
 import Company from "./sections/Company";
 import Services from "./sections/Services";
@@ -9,14 +8,14 @@ import Contact from "./sections/Contact";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center p-4 md:p-8 gap-16">
-      <Hero/>
-      <Company/>
-      <Services/>
-      <Case/>
-      <Process/>
-      <Team/>
-      <Contact/>
+    <main id="main" className="flex flex-col gap-section pb-4">
+      <Hero />
+      <Company />
+      <Services />
+      <Case />
+      <Process />
+      <Team />
+      <Contact />
     </main>
   );
 }
